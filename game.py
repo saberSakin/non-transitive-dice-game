@@ -15,14 +15,19 @@ class DiceParser:
     @staticmethod
     def parse(arguments):
         dice_list = []
+        num_faces_set = set()
         for arg in arguments:
             try:
                 faces = list(map(int, arg.split(",")))
                 if len(faces) < 1:
                     raise ValueError("Dice must have at least one face.")
+                num_faces_set.add(len(faces))
                 dice_list.append(Dice(faces))
             except ValueError:
                 raise ValueError(f"Invalid dice configuration: {arg}. Ensure it contains comma-separated integers.")
+        
+        if len(num_faces_set) != 1:
+            raise ValueError("All dice must have the same number of sides.")
         return dice_list
 
 class RandomGenerator:
@@ -32,9 +37,7 @@ class RandomGenerator:
 
     @staticmethod
     def generate_random_number(max_value):
-        while True:
-            number = secrets.randbelow(max_value + 1)
-            return number
+        return secrets.randbelow(max_value + 1)
 
 class HMACGenerator:
     @staticmethod
